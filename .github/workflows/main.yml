@@ -1,0 +1,23 @@
+name: Build APK
+on: [push, workflow_dispatch]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+      - name: Unzip project
+        run: unzip ZAFMarket.zip
+      - name: Grant execute permission for gradlew
+        run: chmod +x ZAFMarket/gradlew
+      - name: Build with Gradle
+        run: cd ZAFMarket && ./gradlew assembleRelease
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: ZAFMarket-APK
+          path: ZAFMarket/app/build/outputs/apk/release/app-release-unsigned.apk
