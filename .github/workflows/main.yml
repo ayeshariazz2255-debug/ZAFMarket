@@ -11,13 +11,13 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
       - name: Unzip project
-        run: unzip ZAFMarket.zip
-      - name: Grant execute permission for gradlew
-        run: chmod +x ZAFMarket/gradlew
-      - name: Build with Gradle
-        run: cd ZAFMarket && ./gradlew assembleRelease
+        run: unzip ZAFMarket.zip && ls -la
+      - name: Make gradlew executable
+        run: find . -name "gradlew" -exec chmod +x {} \;
+      - name: Build APK
+        run: find . -name "gradlew" | head -1 | xargs -I{} sh -c 'cd $(dirname {}) && ./gradlew assembleRelease'
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: ZAFMarket-APK
-          path: ZAFMarket/app/build/outputs/apk/release/app-release-unsigned.apk
+          path: '**/app/build/outputs/apk/release/*.apk'
